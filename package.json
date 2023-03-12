@@ -1,0 +1,25 @@
+{
+  "name": "meditAI",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@nextui-org/react": "^1.0.0-beta.12",
+    "debug": "^4.3.4",
+    "extract-json-from-string": "^1.0.1",
+    "lottie-react": "^2.4.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.26.0",
+    "next": "^13.1.1",
+    "openai": "^3.2.0",
+    "react": "^18.2.0",
+    "react-audio-player": "^0.17.0",
+    "react-dom": "^18.2.0"
+  },
+  "engines": {
+    "node": ">=14.6.0"
+  }
+}
