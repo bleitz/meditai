@@ -14,7 +14,7 @@ const generateTimedSSMLString = (scriptString, duration) => {
     // [
     //     { "paragraph": "Hello, my name is Jenny.", "pause": "short" },
     //     { "paragraph": "Hello, my name is Paul.", "pause": "long" },
-    //     ...
+    //     ...  
     // ]
     // ]
 
