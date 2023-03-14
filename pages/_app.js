@@ -2,6 +2,8 @@
 import { NextUIProvider } from '@nextui-org/react';
 import { useRouter } from 'next/router'
 
+import * as ga from '../utils/ga'
+
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
@@ -20,7 +22,7 @@ function MyApp({ Component, pageProps }) {
     }
   }, [router.events])
 
-  
+
   return (
     // 2. Use at the root of your app
     <NextUIProvider>
