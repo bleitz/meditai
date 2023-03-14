@@ -1,5 +1,7 @@
 // 1. import `NextUIProvider` component
 import { NextUIProvider } from '@nextui-org/react';
+import { useEffect } from 'react'
+
 import { useRouter } from 'next/router'
 
 import * as ga from '../utils/ga'
