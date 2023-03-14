@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import styles from "./index.module.css";
 
 import ReactAudioPlayer from "react-audio-player";
-import { Text, Textarea, Button, Radio, Image, Tooltip, Modal, useModal } from '@nextui-org/react';
+import { Text, Textarea, Button, Radio, Image, Tooltip, Modal, useModal, Link } from '@nextui-org/react';
 
 import Lottie from "lottie-react";
 import loadingAnimation from "../public/circle-animation.json";
@@ -147,9 +147,16 @@ export default function Home() {
           <Text>Do you want to cultivate a specific feeling? Contemplate a topic? Internalise a thought?</Text>
           
           <div>
+            <div style={{"display": "flex"}}>
             <Button auto light color="primary" onPress={() => setVisible(true)}>
               Learn more
             </Button>
+            <Button auto light color="primary">
+              <Link href="https://docs.google.com/forms/d/e/1FAIpQLScxg0Vm0aVm7pn3ln-5DDwHplFH6lMP1i_DfasL4BzZbRFLNA/viewform?usp=sf_link" isExternal>
+                Feedback
+              </Link>
+            </Button>
+            </div>
 
             <Modal
               scroll
@@ -206,7 +213,7 @@ export default function Home() {
               <Radio value="5">
                 <Text>5 min</Text>
               </Radio>
-              <Tooltip content={"This is on my todo list. Please leave feedback below if this is important to you :)"}>
+              <Tooltip content={"This is on my todo list. Please leave feedback above if this is important to you :)"}>
                 <Radio value="10" isDisabled>
                   <Text>10 min (soon)</Text>
                 </Radio>
@@ -240,7 +247,8 @@ export default function Home() {
                   </div>
 
                   <Button 
-                    bordered 
+                    light
+                    color="primary" 
                     onPress={() => setAudioSrc('')} 
                     style={{ "margin": "64px"}}>
                       Start a new meditation
