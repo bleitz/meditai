@@ -47,22 +47,20 @@ export default function Home() {
     try {
 
       // Get raw chatGPT script
-      // const scriptString = await getScript(topicInput);
-      // console.log(scriptString)
+      const scriptString = await getScript(topicInput);
+      console.log(scriptString)
 
       // Get timed audio
+      const blob = await getAudio(scriptString, duration);
+      setAudioSrc(URL.createObjectURL(blob));
 
-      // const blob = await getAudio(scriptString, duration);
-      // setAudioSrc(URL.createObjectURL(blob));
-
-      // Set a timer to simulate the audio generation process
-      const blob = await setTimeout(() => {
+      // Set a timer to simulate the audio generation process when testing locally
+      /* const blob = await setTimeout(() => {
         setAudioSrc("blah");
         setLoading(false);
-      }, 3000);
+      }, 3000); */
 
-      //setAudioSrc("blah");
-      //setLoading(false);
+      setLoading(false);
 
     } catch(error) {
 
