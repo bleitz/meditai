@@ -54,7 +54,7 @@ export default function Home() {
       const blob = await getAudio(scriptString, duration);
       setAudioSrc(URL.createObjectURL(blob));
 
-      // Set a timer to simulate the audio generation process when testing locally
+      // Set a timer to simulate the async operations when testing the UI locally
       /* const blob = await setTimeout(() => {
         setAudioSrc("blah");
         setLoading(false);
@@ -197,7 +197,14 @@ export default function Home() {
                   
                   </div>
 
-                  <Button bordered onPress={() => setAudioSrc('') && setTopicInput('')} style={{ "margin": "64px"}}>Generate a new meditation</Button>
+                  <Button 
+                    bordered 
+                    onPress={() => {
+                      setAudioSrc('');
+                      setTopicInput('');
+                    }} 
+                    style={{ "margin": "64px"}}
+                  >Generate a new meditation</Button>
 
                 </div>
               :
