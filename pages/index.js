@@ -47,14 +47,22 @@ export default function Home() {
     try {
 
       // Get raw chatGPT script
-      const scriptString = await getScript(topicInput);
-      console.log(scriptString)
+      // const scriptString = await getScript(topicInput);
+      // console.log(scriptString)
 
       // Get timed audio
-      const blob = await getAudio(scriptString, duration);
-      setAudioSrc(URL.createObjectURL(blob));
-      setTopicInput("");
-      setLoading(false);
+
+      // const blob = await getAudio(scriptString, duration);
+      // setAudioSrc(URL.createObjectURL(blob));
+
+      // Set a timer to simulate the audio generation process
+      const blob = await setTimeout(() => {
+        setAudioSrc("blah");
+        setLoading(false);
+      }, 3000);
+
+      //setAudioSrc("blah");
+      //setLoading(false);
 
     } catch(error) {
 
@@ -121,34 +129,20 @@ export default function Home() {
         <link rel="icon" href="/logo-noname.png" />
       </Head>
 
-      <div style={{ "display": "flex", "justifyContent": "center", "alignItems": "center"}}>
-          <label htmlFor="music" style={{ "margin": "16px"}}>Music</label>
-          <input
-            id="music"
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={volume}
-            onChange={handleVolumeChange}
-            disabled={!isPlaying}
-          />
-          <audio loop src="music.mp3" ref={audioRef}></audio>
-      </div>
-
       <main className={styles.main}>
+        <audio loop src="music.mp3" ref={audioRef}></audio>
 
-        <div style={{ "margin": "16px 0 32px" }}>
-          <Image
-            width={150}
-            height={150}  
-            src="logo-noname.png"
-            alt="Logo"
-            objectFit="cover"
-          />
-        </div>
 
         <div style={{ "margin": "16px 0 48px" }}>
+          <div style={{ "margin": "40px" }}>
+            <Image
+              width={150}
+              height={150}  
+              src="logo-noname.png"
+              alt="Logo"
+              objectFit="cover"
+            />
+          </div>
           <Text h2>How can I guide your meditation?</Text>
           <Text>Do you want to cultivate a specific thought or feeling? <br></br> Contemplate a particular topic?<br></br>  Manifest or internalise a concrete idea?</Text>
         </div>
@@ -160,6 +154,7 @@ export default function Home() {
             value={topicInput}
             onChange={(e) => setTopicInput(e.target.value)}
             fullWidth={true}
+            disabled={loading || audioSrc}
           />
 
           <div style={{ "margin": "16px 0 16px", "display": "flex", "justifyContent": "center" }}>
@@ -168,6 +163,7 @@ export default function Home() {
               defaultValue="5" 
               value={duration} 
               onChange={setDuration}
+              isDisabled={loading || audioSrc}
             >
               <Radio value="5">
                 5 min
@@ -178,20 +174,49 @@ export default function Home() {
             </Radio.Group>
           </div>
 
-          <div style={{ "height": "100px", "margin": "8px 0 16px", "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
             {
-              audioSrc ? <ReactAudioPlayer src={audioSrc} controls onPlay={togglePlay} onPause={togglePlay}/> 
+              audioSrc ? 
+                <div style={{ "margin": "48px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center" }}>
+
+                  <div>
+
+                    <ReactAudioPlayer src={audioSrc} controls onPlay={togglePlay} onPause={togglePlay} style={{"margin": "8px"}}/>
+
+                    <div className="music-controls" style={{ "display": "flex", "justifyContent": "center", "alignItems": "center"}}>
+                      <label htmlFor="music" style={{ "margin": "0 8px"}}>Music</label>
+                      <input
+                        style={{ "margin": "0 8px"}}
+                        id="music"
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        value={volume}
+                        onChange={handleVolumeChange}
+                        disabled={!isPlaying}
+                      />
+                    </div>
+                  
+                  </div>
+
+                  <Button bordered onPress={() => setAudioSrc('') && setTopicInput('')} style={{ "margin": "64px"}}>Generate a new meditation</Button>
+
+                </div>
               :
-                (loading ? <Lottie style={{ "width": "100px" }} animationData={loadingAnimation} loop={true} />
+                (loading ? 
+                  <div>
+                    <Lottie style={{ "height": "100px" }} animationData={loadingAnimation} loop={true} />
+                  </div>
                 :
-                <Button 
-                  onPress={onSubmit} 
-                  onKeyDown={(e) => (e.key === "Enter" ? onSubmit() : null)}
-                  disabled={topicInput ? false : true}>
-                    {topicInput ? "Generate your meditation" : "Please enter a topic"}
-                  </Button>)
+                <div style={{ "height": "100px", "display": "flex", "alignItems": "center", "justifyContent": "center"  }}>
+                  <Button 
+                    onPress={onSubmit} 
+                    onKeyDown={(e) => (e.key === "Enter" ? onSubmit() : null)}
+                    disabled={!topicInput}>
+                      {topicInput ? "Generate your meditation" : "Please enter a topic"}
+                  </Button>
+                </div>)
             }
-          </div>
         </div>
         
       </main>

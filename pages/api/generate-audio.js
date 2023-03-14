@@ -4,6 +4,9 @@
 const { textToSpeech } = require('../../utils/azure-cognitiveservices-speech');
 const extract = require('extract-json-from-string');
 
+const key = process.env.AZURE_API_KEY;
+const region = process.env.AZURE_REGION;
+
 const generateTimedSSMLString = (scriptString, duration) => {
 
     // Takes in string of an array with the following structure:
@@ -27,12 +30,12 @@ const generateTimedSSMLString = (scriptString, duration) => {
         totalWords += paragraph.split(' ').length;
     }
 
-    // Calculate duration of spoken text given the total number of words and a rate of 80 words per minute
-    let spokenDuration = Math.round(totalWords / 80 * 60);
+    // Calculate duration of spoken text given the total number of words and a rate of 85 words per minute
+    let spokenDuration = Math.round(totalWords / 85 * 60);
     
     // Calculate the total duration of breaks needed to achieve the desired duration
     const desiredDuration = (60 * duration) || 60 * 5; // Convert duration from minutes to seconds
-    let breakDuration = desiredDuration - spokenDuration - 5; // Subtract 5 seconds for the initial pause
+    let breakDuration = desiredDuration - spokenDuration - 5 - 10; // Subtract 5 seconds for the initial pause & 10 seconds as a buffer
 
     console.log("desiredDuration: "+desiredDuration)
     console.log("spokenDuration: "+spokenDuration)
@@ -104,8 +107,8 @@ export default async function(req, res) {
     const { scriptString, duration, file } = req.body;
     if (!scriptString) res.status(404).send('Invalid query string');
 
-    const key = 'faac4ed6b7524f0bb18b292f84238898';
-    const region = 'germanywestcentral';
+/*     const key = 'faac4ed6b7524f0bb18b292f84238898';
+    const region = 'germanywestcentral'; */
 
     const timedSSMLScript = generateTimedSSMLString(scriptString, duration);
 
