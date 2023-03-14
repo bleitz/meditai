@@ -199,10 +199,7 @@ export default function Home() {
 
                   <Button 
                     bordered 
-                    onPress={() => {
-                      setAudioSrc('');
-                      setTopicInput('');
-                    }} 
+                    onPress={() => setAudioSrc('')} 
                     style={{ "margin": "64px"}}
                   >Generate a new meditation</Button>
 
