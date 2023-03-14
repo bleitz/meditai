@@ -5,7 +5,6 @@ const { textToSpeech } = require('../../utils/azure-cognitiveservices-speech');
 const extract = require('extract-json-from-string');
 
 const generateTimedSSMLString = (scriptString, duration) => {
-    console.log("duration: "+duration)
 
     // Takes in string of an array with the following structure:
     // [
@@ -28,13 +27,16 @@ const generateTimedSSMLString = (scriptString, duration) => {
         totalWords += paragraph.split(' ').length;
     }
 
-    // Calculate duration of spoken text given the total number of words and a rate of 160 words per minute
-    let spokenDuration = Math.round(totalWords / 160 * 60);
+    // Calculate duration of spoken text given the total number of words and a rate of 80 words per minute
+    let spokenDuration = Math.round(totalWords / 80 * 60);
     
     // Calculate the total duration of breaks needed to achieve the desired duration
     const desiredDuration = (60 * duration) || 60 * 5; // Convert duration from minutes to seconds
-    let breakDuration = desiredDuration - spokenDuration;
+    let breakDuration = desiredDuration - spokenDuration - 5; // Subtract 5 seconds for the initial pause
 
+    console.log("desiredDuration: "+desiredDuration)
+    console.log("spokenDuration: "+spokenDuration)
+    console.log("breakDuration: "+breakDuration)
 
     // Count the number of short, medium and long breaks in scriptArray
     let shortBreaks = 0;
@@ -63,7 +65,11 @@ const generateTimedSSMLString = (scriptString, duration) => {
     const longBreaks5s = Math.floor(longBreakDuration / 5);
 
     // Generate SSML string
-    let ssmlString = `<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xml:lang="en-US"><voice name="en-US-JennyNeural" style="whispering">`;
+    let ssmlString = `
+        <speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">
+        <voice name="en-US-JennyNeural" style="whispering">
+        <mstts:silence type="Sentenceboundary" value="5000ms"/>
+        <prosody rate="0.94"><break time="5s"/>`;
 
     for (let i = 0; i < scriptArray.length; i++) {
         ssmlString += `<p>${scriptArray[i].paragraph}</p>`;
@@ -88,7 +94,7 @@ const generateTimedSSMLString = (scriptString, duration) => {
         }
     }
 
-    ssmlString += `</voice></speak>`;
+    ssmlString += `</prosody></voice></speak>`;
 
     return ssmlString;
 }

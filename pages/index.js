@@ -117,7 +117,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>mindGPT - 100% AI-generated, personalized guided meditations</title>
+        <title>meditai - Automated, personalized guided meditations</title>
         <link rel="icon" href="/logo-noname.png" />
       </Head>
 
@@ -175,9 +175,6 @@ export default function Home() {
               <Radio value="10">
                 10 min
               </Radio>
-              <Radio value="15">
-                15 min
-              </Radio>
             </Radio.Group>
           </div>
 
@@ -187,7 +184,12 @@ export default function Home() {
               :
                 (loading ? <Lottie style={{ "width": "100px" }} animationData={loadingAnimation} loop={true} />
                 :
-                <Button onPress={onSubmit}>Generate your meditation</Button>)
+                <Button 
+                  onPress={onSubmit} 
+                  onKeyDown={(e) => (e.key === "Enter" ? onSubmit() : null)}
+                  disabled={topicInput ? false : true}>
+                    {topicInput ? "Generate your meditation" : "Please enter a topic"}
+                  </Button>)
             }
           </div>
         </div>

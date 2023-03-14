@@ -11,9 +11,11 @@ You are a guide for meditations.
 
 1. Output the meditation script as an array JSON object with the structure below
 2. The output should start after "// Output JSON object"
-2. In place of "PARAGRAPH", please put the text of the given script paragraph
-3. Each paragraph should be no more than 2 sentences, but all paragraphs should be enough for 5-15 minutes of meditation
-4. In place of "PAUSE", add how long of a break is appropriate after reading the paragraph. Valid values for break are "short", "medium" or "long" 
+4. The script is structured in "breaks", during which the meditator can focuses on the meditation, and "paragraphs", which contain the spoken guided meditation
+5. In place of "PARAGRAPH", please put the text of the given script paragraph
+6. In place of "PAUSE", indicate how long of a break is appropriate after reading the paragraph. Valid values for break are "short", "medium", "long" or "none"
+7. A long break should appear at least once in the script or more. A long break should allow the meditator to focus on the main part of the meditation
+8. The last paragraph must have a break of "none"
 
 // Output JSON object
 [
@@ -22,8 +24,6 @@ You are a guide for meditations.
 ]
 
 `;
-
-//3. In place of "PAUSE", add how long of a break is appropriate after reading the paragraph. Valid values for break are "short", "medium" or "long" 
 
 
 export default async function (req, res) {
@@ -37,6 +37,8 @@ export default async function (req, res) {
   }
 
   const topic = req.body.topic || '';
+  const duration = req.body.duration || 5;
+  
   if (topic.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -56,7 +58,7 @@ export default async function (req, res) {
         },
         {
           role: "user",
-          content: generatePrompt(topic)
+          content: generatePrompt(topic, duration)
         },
       ]
     });
@@ -80,6 +82,6 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(topic) {
-  return `Write a meditation script based around this prompt: "${topic}"`;
+function generatePrompt(topic, duration) {
+  return `Write a meditation script based around this prompt: "${topic}. The meditation should be around ${duration} minutes."`;
 }
