@@ -1,12 +1,7 @@
 {
     "functions": {
-    "api/generate-script.js": {
-        "memory": 3008,
+    "api/**/*.js": {
         "maxDuration": 60
-        },
-      "api/generate-audio.js": {
-        "memory": 3008,
-        "maxDuration": 60
-      }
+        }
     }
   }
