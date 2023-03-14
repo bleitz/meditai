@@ -35,7 +35,7 @@ const generateTimedSSMLString = (scriptString, duration) => {
     
     // Calculate the total duration of breaks needed to achieve the desired duration
     const desiredDuration = (60 * duration) || 60 * 5; // Convert duration from minutes to seconds
-    let breakDuration = desiredDuration - spokenDuration - 5 - 10; // Subtract 5 seconds for the initial pause & 10 seconds as a buffer
+    let breakDuration = desiredDuration - spokenDuration - 5 - 20; // Subtract 5 seconds for the initial pause & 10 seconds as a buffer
 
     console.log("desiredDuration: "+desiredDuration)
     console.log("spokenDuration: "+spokenDuration)
