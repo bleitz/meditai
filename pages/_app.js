@@ -7,6 +7,8 @@ import { useRouter } from 'next/router'
 import * as gtag from '../lib/gtag.js'
 import Script from 'next/script';
 
+import { Analytics } from '@vercel/analytics/react';
+
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
@@ -41,9 +43,8 @@ function MyApp({ Component, pageProps }) {
                     });
                 `}
       </Script>
-    
+      <Analytics />
       <NextUIProvider>
-
         <Component {...pageProps} />
       </NextUIProvider>
     </>
