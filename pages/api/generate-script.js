@@ -64,7 +64,7 @@ export default async function (req, res) {
       ]
     });
 
-
+    console.log("Prompt: "+topic)
     console.log(completion.data.choices[0].message.content)
     res.status(200).json({ result: completion.data.choices[0].message.content });
   } catch(error) {

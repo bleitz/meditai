@@ -50,7 +50,6 @@ export default function Home() {
 
       // Get raw chatGPT script
       const scriptString = await getScript(topicInput);
-      console.log(scriptString)
 
       // Get timed audio
       const blob = await getAudio(scriptString, duration);
@@ -148,14 +147,14 @@ export default function Home() {
           
           <div>
             <div style={{"display": "flex"}}>
-            <Button auto light color="primary" onPress={() => setVisible(true)}>
-              Learn more
-            </Button>
-            <Button auto light color="primary">
-                <a target="_blank"  href="https://docs.google.com/forms/d/e/1FAIpQLScxg0Vm0aVm7pn3ln-5DDwHplFH6lMP1i_DfasL4BzZbRFLNA/viewform?usp=sf_link" rel="noopener noreferrer">
-                 Feedback
-                </a>
-            </Button>
+              <Button auto light color="primary" onPress={() => setVisible(true)}>
+                Learn more
+              </Button>
+              <Button auto light color="primary">
+                  <a target="_blank"  href="https://docs.google.com/forms/d/e/1FAIpQLScxg0Vm0aVm7pn3ln-5DDwHplFH6lMP1i_DfasL4BzZbRFLNA/viewform?usp=sf_link" rel="noopener noreferrer">
+                  Feedback
+                  </a>
+              </Button>
             </div>
 
             <Modal
