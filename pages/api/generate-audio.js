@@ -97,7 +97,7 @@ const generateTimedSSMLString = (scriptString, duration) => {
         }
     }
 
-    ssmlString += `</prosody></voice></speak>`;
+    ssmlString += `<break time="5s"/></prosody></voice></speak>`;
 
     return ssmlString;
 }
