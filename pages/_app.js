@@ -9,6 +9,8 @@ import Script from 'next/script';
 
 import { Analytics } from '@vercel/analytics/react';
 
+const LogRocket = require('logrocket');
+
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
@@ -26,6 +28,8 @@ function MyApp({ Component, pageProps }) {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
   }, [router.events])
+
+  LogRocket.init('app/id');
 
 
   return (

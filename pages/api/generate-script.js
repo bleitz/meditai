@@ -11,12 +11,10 @@ const systemPrompt = `
   You are a guide for meditations.  
 
   1. Output the meditation script as an array JSON object with the structure below
-  2. The output should start after "// Output JSON object"
-  3. The script is structured in "breaks", during which the meditator can focus on the meditation, and "paragraphs", which contain the spoken guided meditation
-  4. In place of "PARAGRAPH", please put the text of the given script paragraph
-  5. In place of "PAUSE", indicate how long of a break is appropriate after reading the paragraph. Valid values for break are "short", "medium", "long" or "none"
-  6. A long break should appear at least once in the script or more. A long break should allow the meditator to focus on the main part of the meditation
-  7. The last paragraph must have a break of "none"
+  2. The script is structured in "breaks", during which the meditator can focus on the meditation, and "paragraphs", which contain the spoken guided meditation
+  3. Valid values for break are "short", "medium", "long" or "none"
+  4. A long break should allow the meditator to focus on the main part of the meditation
+  5. The last paragraph must have a break of "none"
 
   // Output JSON object
   [
@@ -68,6 +66,7 @@ export default async function (req, res) {
     console.log(completion.data.choices[0].message.content)
     res.status(200).json({ result: completion.data.choices[0].message.content });
   } catch(error) {
+
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
       console.error(error.response.status, error.response.data);
