@@ -8,6 +8,21 @@ import { Text, Textarea, Button, Radio, Image, Tooltip, Modal, useModal, Link } 
 import Lottie from "lottie-react";
 import loadingAnimation from "../public/circle-animation.json";
 
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, updateDoc, addDoc, collection } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 export default function Home() {
   const [topicInput, setTopicInput] = useState("");
   const [audioSrc, setAudioSrc] = useState('');
@@ -48,18 +63,33 @@ export default function Home() {
 
     try {
 
+      // Log prompt to Firebase; but don't log if running locally
+      if (!(window.location.hostname === "localhost")) {
+        const promptDocRef = await addDoc(collection(db, "prompts"), {
+          prompt: topicInput,
+          duration: duration,
+        });
+      }
+
       // Get raw chatGPT script
       const scriptString = await getScript(topicInput);
+
+      // Log script to Firebase; but don't log if running locally
+      if (!(window.location.hostname === "localhost")) {
+        await updateDoc(doc(db, "prompts", promptDocRef.id), {
+          script: scriptString
+        });
+      }
 
       // Get timed audio
       const blob = await getAudio(scriptString, duration);
       setAudioSrc(URL.createObjectURL(blob));
 
-      // Set a timer to simulate the async operations when testing the UI locally
-      /* const blob = await setTimeout(() => {
+      /* // Set a timer to simulate the async operations when testing the UI locally
+      const blob = await setTimeout(() => {
         setAudioSrc("blah");
         setLoading(false);
-      }, 3000); */
+      }, 3000);  */
 
       setLoading(false);
 

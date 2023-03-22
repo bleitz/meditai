@@ -102,9 +102,6 @@ export default async function(req, res) {
     const { scriptString, duration, file } = req.body;
     if (!scriptString) res.status(404).send('Invalid query string');
 
-/*     const key = 'faac4ed6b7524f0bb18b292f84238898';
-    const region = 'germanywestcentral'; */
-
     const timedSSMLScript = generateTimedSSMLString(scriptString, duration);
 
     // Log final text-to-speech input to console

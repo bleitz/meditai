@@ -1,5 +1,20 @@
 import { Configuration, OpenAIApi } from "openai";
 
+// Commented out because I want to first set up the database on the client side - later I will uncomment this and set up the database on the server side
+/*
+import admin from 'firebase-admin';
+const { initializeApp } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+const serviceAccount = require('../../serviceAccountKey.json');
+if (!firebase.apps.length) {
+  firebase.initializeApp({});
+}
+const app = initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  // databaseURL: 'https://your-project-id.firebaseio.com',
+});
+const db = getFirestore(app);
+*/
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -24,7 +39,6 @@ const systemPrompt = `
 
   `;
 
-
 export default async function (req, res) {
   if (!configuration.apiKey) {
     res.status(500).json({
@@ -47,6 +61,11 @@ export default async function (req, res) {
     return;
   }
 
+// Commented out because I want to first set up the database on the client side - later I will uncomment this and set up the database on the server side
+/*   logPrompt(topic)
+  .then(() => console.log("Prompt logged: "+topic))
+  .catch((error) => console.error(error)); */
+
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
@@ -62,7 +81,6 @@ export default async function (req, res) {
       ]
     });
 
-    console.log("Prompt: "+topic)
     console.log(completion.data.choices[0].message.content)
     res.status(200).json({ result: completion.data.choices[0].message.content });
   } catch(error) {
@@ -85,3 +103,12 @@ export default async function (req, res) {
 function generatePrompt(topic, duration) {
   return `Write a meditation script based around this prompt: "${topic}". The meditation should be around ${duration} minutes.`;
 }
+
+// Commented out because I want to first set up the database on the client side - later I will uncomment this and set up the database on the server side
+/* async function logPrompt(prompt) {
+
+  await db.collection("prompts").add({
+    prompt: prompt,
+    createdAt: new Date().getTime(),
+  });
+} */
