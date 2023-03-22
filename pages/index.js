@@ -63,23 +63,21 @@ export default function Home() {
 
     try {
 
-      // Log prompt to Firebase; but don't log if running locally
-      if (!(window.location.hostname === "localhost")) {
-        const promptDocRef = addDoc(collection(db, "prompts"), {
-          prompt: topicInput,
-          duration: duration,
-        });
-      }
+      // Log prompt to Firebase
+      const promptDocRef = addDoc(collection(db, "prompts"), {
+        prompt: topicInput,
+        duration: duration,
+        timestamp: new Date(),
+        promptURL: window.location.href
+      });      
 
       // Get raw chatGPT script
       const scriptString = await getScript(topicInput);
 
-      // Log script to Firebase; but don't log if running locally
-      if (!(window.location.hostname === "localhost")) {
-        updateDoc(doc(db, "prompts", promptDocRef.id), {
-          script: scriptString
-        });
-      }
+      // Log script to Firebase
+      updateDoc(doc(db, "prompts", promptDocRef.id), {
+        script: scriptString
+      });
 
       // Get timed audio
       const blob = await getAudio(scriptString, duration);
