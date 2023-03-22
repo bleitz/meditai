@@ -65,7 +65,7 @@ export default function Home() {
 
       // Log prompt to Firebase; but don't log if running locally
       if (!(window.location.hostname === "localhost")) {
-        const promptDocRef = await addDoc(collection(db, "prompts"), {
+        const promptDocRef = addDoc(collection(db, "prompts"), {
           prompt: topicInput,
           duration: duration,
         });
@@ -76,7 +76,7 @@ export default function Home() {
 
       // Log script to Firebase; but don't log if running locally
       if (!(window.location.hostname === "localhost")) {
-        await updateDoc(doc(db, "prompts", promptDocRef.id), {
+        updateDoc(doc(db, "prompts", promptDocRef.id), {
           script: scriptString
         });
       }
