@@ -9,15 +9,6 @@ const region = process.env.AZURE_REGION;
 
 const generateTimedSSMLString = (scriptString, duration) => {
 
-    // Takes in string of an array with the following structure:
-    // [
-    // [
-    //     { "paragraph": "Hello, my name is Jenny.", "pause": "short" },
-    //     { "paragraph": "Hello, my name is Paul.", "pause": "long" },
-    //     ...  
-    // ]
-    // ]
-
     // Extracts the inner array from the string
     const outterArray = extract(scriptString);
     const scriptArray = outterArray[0];

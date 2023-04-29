@@ -64,7 +64,7 @@ export default function Home() {
     try {
 
       // Log prompt to Firebase
-      const promptDocRef = addDoc(collection(db, "prompts"), {
+      const promptDocRef = await addDoc(collection(db, "prompts"), {
         prompt: topicInput,
         duration: duration,
         timestamp: new Date(),
@@ -75,19 +75,25 @@ export default function Home() {
       const scriptString = await getScript(topicInput);
 
       // Log script to Firebase
-      updateDoc(doc(db, "prompts", promptDocRef.id), {
-        script: scriptString
-      });
+      try {
+        await updateDoc(promptDocRef, {
+          script: scriptString
+        }); 
+      } catch (error) {
+        console.error("Error updating document: ", error);
+      }
 
       // Get timed audio
       const blob = await getAudio(scriptString, duration);
       setAudioSrc(URL.createObjectURL(blob));
 
-      /* // Set a timer to simulate the async operations when testing the UI locally
+/* 
+      // Set a timer to simulate the async operations when testing the UI locally
       const blob = await setTimeout(() => {
         setAudioSrc("blah");
         setLoading(false);
-      }, 3000);  */
+      }, 3000); 
+       */
 
       setLoading(false);
 
@@ -174,10 +180,10 @@ export default function Home() {
           
           <div>
             <div style={{"display": "flex"}}>
-              <Button auto light color="primary" onPress={() => setVisible(true)}>
+              <Button auto light color="primary" onPress={() => setVisible(true)} aria-label="learn-more">
                 Learn more
               </Button>
-              <Button auto light color="primary">
+              <Button auto light color="primary" aria-label="feedback">
                   <a target="_blank"  href="https://docs.google.com/forms/d/e/1FAIpQLScxg0Vm0aVm7pn3ln-5DDwHplFH6lMP1i_DfasL4BzZbRFLNA/viewform?usp=sf_link" rel="noopener noreferrer">
                   Feedback
                   </a>
@@ -211,7 +217,7 @@ export default function Home() {
               </Modal.Body>
 
               <Modal.Footer>
-                <Button auto onPress={() => setVisible(false)}>
+                <Button auto onPress={() => setVisible(false)} aria-label="close">
                   Close
                 </Button>
               </Modal.Footer>
@@ -228,6 +234,7 @@ export default function Home() {
             onChange={(e) => setTopicInput(e.target.value)}
             fullWidth={true}
             disabled={loading || audioSrc}
+            aria-label="meditation-topic"
           />
 
           <div style={{ "margin": "16px 0 16px", "display": "flex", "justifyContent": "center" }}>
@@ -237,6 +244,7 @@ export default function Home() {
               value={duration} 
               onChange={setDuration}
               isDisabled={loading || audioSrc}
+              aria-label="duration"
             >
               <Radio value="5">
                 <Text>5 min</Text>
@@ -278,7 +286,8 @@ export default function Home() {
                     light
                     color="primary" 
                     onPress={() => setAudioSrc('')} 
-                    style={{ "margin": "64px"}}>
+                    style={{ "margin": "64px"}}
+                    aria-label="new-meditation">
                       Start a new meditation
                     </Button>
 
@@ -293,7 +302,8 @@ export default function Home() {
                   <Button 
                     onPress={onSubmit} 
                     onKeyDown={(e) => (e.key === "Enter" ? onSubmit() : null)}
-                    disabled={!topicInput}>
+                    disabled={!topicInput}
+                    aria-label="create-meditation">
                       {topicInput ? "Create your meditation" : "Please enter a topic"}
                   </Button>
                 </div>)
