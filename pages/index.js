@@ -51,7 +51,7 @@ export default function Home() {
 
   const handleMusicToggle = (e) => {
     const music = musicRef.current;
-    e.target.checked ? music.volume = 0.8 : music.volume = 0;
+    e.target.checked ? music.play() : music.pause();
   };
 
   const handleInputChange = (e) => {
