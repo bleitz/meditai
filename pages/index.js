@@ -33,27 +33,31 @@ export default function Home() {
 
   const { setVisible, bindings } = useModal();
 
+  const musicRef = useRef(null);
   const audioRef = useRef(null);
   const inputRef = useRef(null);
 
   const togglePlay = () => {
+    const music = musicRef.current;
     const audio = audioRef.current;
     if (isPlaying) {
+      music.pause();
       audio.pause();
     } else {
+      music.play();
       audio.play();
     }
     setIsPlaying(!isPlaying);
   };  
 
   const handleVolumeChange = (e) => {
-    const audio = audioRef.current;
-    audio.volume = e.target.value;
+    const music = musicRef.current;
+    music.volume = e.target.value;
     setVolume(e.target.value);
   };
 
   useEffect(() => {
-    audioRef.current.volume = volume;
+    musicRef.current.volume = volume;
   }, [volume]);
 
   const handleInputChange = (e) => {
@@ -168,7 +172,8 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <audio loop src="music.mp3" ref={audioRef} controls></audio>
+        <button onClick={togglePlay}>Toggle Play</button>
+        <audio loop src="music.mp3" ref={musicRef} controls></audio>
 
         <div style={{ "margin": "16px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center" }}>
           <div style={{ "margin": "40px" }}>
@@ -270,8 +275,7 @@ export default function Home() {
                 <div style={{ "margin": "48px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center" }}>
 
                   <div>
-
-                    <ReactAudioPlayer src={audioSrc} controls onPlay={togglePlay} onPause={togglePlay} style={{"margin": "8px"}}/>
+                    <ReactAudioPlayer src={audioSrc} controls style={{"margin": "8px"}}/>
 
                     <div className="music-controls" style={{ "display": "flex", "justifyContent": "center", "alignItems": "center"}}>
                       <label htmlFor="music" style={{ "margin": "0 8px"}}>Music</label>
