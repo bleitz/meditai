@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import styles from "./index.module.css";
 
 import ReactAudioPlayer from "react-audio-player";
-import { Text, Textarea, Button, Radio, Image, Tooltip, Modal, useModal } from '@nextui-org/react';
+import { Text, Textarea, Button, Radio, Image, Tooltip, Modal, useModal, Switch } from '@nextui-org/react';
 
 import Lottie from "lottie-react";
 import loadingAnimation from "../public/circle-animation.json";
@@ -29,7 +29,6 @@ export default function Home() {
   const [duration, setDuration] = useState("5");
   const [loading, setLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.2);
 
   const { setVisible, bindings } = useModal();
 
@@ -50,10 +49,9 @@ export default function Home() {
     setIsPlaying(!isPlaying);
   };  
 
-  const handleVolumeChange = (e) => {
+  const handleMusicToggle = (e) => {
     const music = musicRef.current;
-    music.volume = e.target.value;
-    setVolume(e.target.value);
+    e.target.checked ? music.volume = 0.8 : music.volume = 0;
   };
 
   const handleInputChange = (e) => {
@@ -289,17 +287,12 @@ export default function Home() {
 
                     <div className="music-controls" style={{ "display": "flex", "justifyContent": "center", "alignItems": "center"}}>
                       <label htmlFor="music" style={{ "margin": "0 8px"}}>Music</label>
-                      <input
+                      <Switch 
                         style={{ "margin": "0 8px"}}
                         id="music"
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.1"
-                        value={volume}
-                        onChange={handleVolumeChange}
-                        disabled={!isPlaying}
-                      />
+                        onChange={handleMusicToggle}
+                        disabled={!isPlaying}>
+                      </Switch>
                     </div>
                   
                   </div>
