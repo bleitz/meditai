@@ -23,19 +23,20 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const systemPrompt = `
-  You are a guide for meditations.  
+    You are a guide for meditations.  
 
-  1. Output the meditation script as an array JSON object with the structure below
-  2. The script is structured in "breaks", during which the meditator can focus on the meditation, and "paragraphs", which contain the spoken guided meditation
-  3. Valid values for break are "short", "medium", "long" or "none"
-  4. A long break should allow the meditator to focus on the main part of the meditation
-  5. The last paragraph must have a break of "none"
+    1. Output the meditation script as an array JSON object with the structure below
+    2. The script is structured in "breaks", during which the meditator can focus on the meditation, and "paragraphs", which contain the spoken guided meditation
+    3. Valid values for break are "short", "medium", "long" or "none"
+    4. A long break should allow the meditator to focus on the main part of the meditation
+    5. The last paragraph must have a break of "none"
+    6. No matter the language of the prompt, the script should be in English
 
-  // Output JSON object
-  [
-    { "paragraph": PARAGRAPH, "pause": PAUSE},
-    ...
-  ]
+    // Output JSON object
+    [
+      { "paragraph": PARAGRAPH, "pause": PAUSE},
+      ...
+    ]
 
   `;
 
