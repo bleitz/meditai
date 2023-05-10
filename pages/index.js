@@ -56,10 +56,6 @@ export default function Home() {
     setVolume(e.target.value);
   };
 
-  useEffect(() => {
-    musicRef.current.volume = volume;
-  }, [volume]);
-
   const handleInputChange = (e) => {
     setTopicInput(e.target.value);
     const cursorPosition = inputRef.current.selectionStart;
@@ -274,7 +270,12 @@ export default function Home() {
                 <div style={{ "margin": "48px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center" }}>
 
                   <div>
-                    <audio src={audioSrc} ref={audioRef} style={{"margin": "8px"}}></audio>
+                    <audio 
+                      src={audioSrc} 
+                      ref={audioRef} 
+                      onEnded={() => setIsPlaying(false)}
+                      style={{"margin": "8px"}}
+                    ></audio>
                     <div style={{"margin": "16px"}}>
                       <Image
                         onClick={togglePlay}
