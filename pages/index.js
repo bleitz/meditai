@@ -168,7 +168,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <audio loop src="music.mp3" ref={audioRef}></audio>
+        <audio loop src="music.mp3" ref={audioRef} controls></audio>
 
         <div style={{ "margin": "16px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center" }}>
           <div style={{ "margin": "40px" }}>
