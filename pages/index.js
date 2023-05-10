@@ -172,8 +172,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <button onClick={togglePlay}>Toggle Play</button>
-        <audio loop src="music.mp3" ref={musicRef} controls></audio>
+        <audio loop src="music.mp3" ref={musicRef}></audio>
 
         <div style={{ "margin": "16px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center" }}>
           <div style={{ "margin": "40px" }}>
@@ -275,7 +274,17 @@ export default function Home() {
                 <div style={{ "margin": "48px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center" }}>
 
                   <div>
-                    <ReactAudioPlayer src={audioSrc} controls style={{"margin": "8px"}}/>
+                    <audio src={audioSrc} ref={audioRef} style={{"margin": "8px"}}></audio>
+                    <div style={{"margin": "16px"}}>
+                      <Image
+                        onClick={togglePlay}
+                        width={40}
+                        height={40}
+                        src={!isPlaying ? "play.png" : "pause.png"}
+                        alt={!isPlaying ? "Play" : "Pause"}
+                        objectFit="cover"
+                      />
+                    </div>
 
                     <div className="music-controls" style={{ "display": "flex", "justifyContent": "center", "alignItems": "center"}}>
                       <label htmlFor="music" style={{ "margin": "0 8px"}}>Music</label>
