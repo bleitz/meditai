@@ -290,6 +290,7 @@ export default function Home() {
                       <Switch 
                         style={{ "margin": "0 8px"}}
                         id="music"
+                        initialChecked
                         onChange={handleMusicToggle}
                         disabled={!isPlaying}>
                       </Switch>
