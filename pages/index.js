@@ -1,15 +1,16 @@
 import Head from "next/head";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import styles from "./index.module.css";
 
-import ReactAudioPlayer from "react-audio-player";
-import { Text, Textarea, Button, Radio, Image, Tooltip, Modal, useModal, Switch } from '@nextui-org/react';
+import { Text, Button, Image, Modal, useModal, Switch } from '@nextui-org/react';
 
 import Lottie from "lottie-react";
 import loadingAnimation from "../public/circle-animation.json";
 
 import { initializeApp } from "firebase/app";
 import { getFirestore, updateDoc, addDoc, collection } from "firebase/firestore";
+import { PromptInput } from "../components/PromptInput";
+import { ContentModal } from "../components/ContentModal";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -33,19 +34,10 @@ export default function Home() {
   const { setVisible, bindings } = useModal();
 
   const musicRef = useRef(null);
-  const audioRef = useRef(null);
-  const inputRef = useRef(null);
 
   const togglePlay = () => {
     const music = musicRef.current;
-    const audio = audioRef.current;
-    if (isPlaying) {
-      music.pause();
-      audio.pause();
-    } else {
-      music.play();
-      audio.play();
-    }
+    isPlaying ? music.pause() : music.play();
     setIsPlaying(!isPlaying);
   };  
 
@@ -53,15 +45,9 @@ export default function Home() {
     const music = musicRef.current;
     e.target.checked ? music.play() : music.pause();
   };
-
-  const handleInputChange = (e) => {
-    setTopicInput(e.target.value);
-    const cursorPosition = inputRef.current.selectionStart;
-    console.log(cursorPosition);
-  }
-  
   
   async function onSubmit(event) {
+    const host = window.location.hostname;
 
     setLoading(true);
 
@@ -75,31 +61,32 @@ export default function Home() {
         promptURL: window.location.href
       });      
 
-      // Get raw chatGPT script
-      const scriptString = await getScript(topicInput);
+      if (host != "localhost") {
+        // Get raw chatGPT script
+        const scriptString = await getScript(topicInput);
+        
+        // Log script to Firebase
+        try {
+          await updateDoc(promptDocRef, {
+            script: scriptString
+          }); 
+        } catch (error) {
+          console.error("Error updating document: ", error);
+        }
 
-      // Log script to Firebase
-      try {
-        await updateDoc(promptDocRef, {
-          script: scriptString
-        }); 
-      } catch (error) {
-        console.error("Error updating document: ", error);
-      }
-
-      // Get timed audio
-      const blob = await getAudio(scriptString, duration);
-      setAudioSrc(URL.createObjectURL(blob));
-
-/* 
-      // Set a timer to simulate the async operations when testing the UI locally
-      const blob = await setTimeout(() => {
-        setAudioSrc("blah");
+        // Get timed audio files
+        const blob = await getAudio(scriptString, duration);
+        setAudioSrc(URL.createObjectURL(blob));
+        
         setLoading(false);
-      }, 3000); 
-       */
+      } else {
 
-      setLoading(false);
+        // Set a timer to simulate the async operations when testing the UI locally
+        const blob = await setTimeout(() => {
+          setAudioSrc("blah");
+          setLoading(false);
+        }, 3000); 
+      }
 
     } catch(error) {
 
@@ -170,13 +157,7 @@ export default function Home() {
 
         <div style={{ "margin": "16px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center" }}>
           <div style={{ "margin": "40px" }}>
-            <Image
-              width={150}
-              height={150}  
-              src="logo-noname.png"
-              alt="Logo"
-              objectFit="cover"
-            />
+            <Image width={150} height={150} src="logo-noname.png" alt="Logo" objectFit="cover"/>
           </div>
 
           <Text h2>Your AI meditation guide</Text>
@@ -192,98 +173,37 @@ export default function Home() {
                   Feedback
                   </a>
               </Button>
+
+              <ContentModal setVisible={setVisible} bindings={bindings}/>
+
             </div>
-
-            <Modal
-              scroll
-              width="600px"
-              aria-labelledby="modal-title"
-              aria-describedby="modal-description"
-              {...bindings}
-            >
-              <Modal.Header>
-                <Text h2 id="modal-title" size={18}>
-                  About this tool
-                </Text>
-              </Modal.Header>
-
-              <Modal.Body>
-                <Text h4>What this tool is</Text>
-                <Text>It automatically creates personalized, guided meditations. Use it to explore specific thoughts and feelings, for guidance or to bring more intent to your everyday life.</Text>
-                <Text>Topics to inspire : "I feel anxious about ... ", "I want to be more grateful about ...", "I realised ... . I want to internalize this realisation.", "Today, I get to do ... . I want to appreciate that with more intent." </Text>
-                <Text>Know someone who might like this? Share it with them!</Text>
-                <Text>Questions? Ask them: <a href="mailto:benni_leitz@hotmail.com" rel="noopener noreferrer">benni_leitz@hotmail.com</a></Text>
-                <Text>The meditation script is genererated by OpenAI's GPT API. The audio is generated by Azure's Text-to-Speech API. Music by Andrewkn. Loading animation by Wan Souza.</Text>
-                
-                <Text h4>Why I created this tool</Text>
-                <Text>I often struggle to self reflect, explore difficult ideas or fight stubborn patterns of thought: My mind is quick to get distracted or to interrupt itself with opposing opinions. I have found that guided meditation can help me here: It allows me to drop inherent resistance, be more receiptive to change and make it easier for me to resist distractions. </Text>
-                <Text>Meditation apps are great! But either they focus on core meditation techniques (e.g. around mindfulness or gratitude meditations) or they address very general themes. Naturally, they cannot be specific to the meditators personal thoughts nor should they.</Text>
-                <Text>And here technology can lend us a hand: ChatGPT is able to generate surprisingly gentle, visual and specific scripts. And today's Text-to-Speech technology makes the scripts come to life.</Text>
-              </Modal.Body>
-
-              <Modal.Footer>
-                <Button auto onPress={() => setVisible(false)} aria-label="close">
-                  Close
-                </Button>
-              </Modal.Footer>
-            </Modal>
           </div>
         </div>
 
 
         <div style={{ "margin": "16px 0 32px", "width": "100%" }}>
 
-          <Textarea
-            placeholder="Example: 'I want to cultivate more positivity towards my future'"
-            ref={inputRef}
-            value={topicInput}
-            onChange={handleInputChange}
-            fullWidth={true}
-            disabled={loading || audioSrc}
-            aria-label="meditation-topic"
-          />
-
-          <div style={{ "margin": "16px 0 16px", "display": "flex", "justifyContent": "center" }}>
-            <Radio.Group  
-              orientation="horizontal" 
-              defaultValue="5" 
-              value={duration} 
-              onChange={setDuration}
-              isDisabled={loading || audioSrc}
-              aria-label="duration"
-            >
-              <Radio value="5">
-                <Text>5 min</Text>
-              </Radio>
-              <Tooltip content={"I am working on improving this tool. Please leave feedback above if this is important to you :)"}>
-                <Radio value="10" isDisabled>
-                  <Text>10 min (coming soon)</Text>
-                </Radio>
-              </Tooltip>
-            </Radio.Group>
-          </div>
+            <PromptInput
+              topicInput={topicInput}
+              setTopicInput={setTopicInput} 
+              audioSrc={audioSrc}
+              loading={loading}
+              duration={duration}
+              setDuration={setDuration}
+            />
 
             {
               audioSrc ? 
                 <div style={{ "margin": "48px 0 48px", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center" }}>
-
                   <div>
                     <audio 
                       src={audioSrc} 
-                      ref={audioRef} 
+                      onPlay={togglePlay}
+                      onPause={togglePlay}
+                      controls
                       onEnded={() => setIsPlaying(false)}
                       style={{"margin": "8px"}}
                     ></audio>
-                    <div style={{"margin": "16px"}}>
-                      <Image
-                        onClick={togglePlay}
-                        width={40}
-                        height={40}
-                        src={!isPlaying ? "play.png" : "pause.png"}
-                        alt={!isPlaying ? "Play" : "Pause"}
-                        objectFit="cover"
-                      />
-                    </div>
 
                     <div className="music-controls" style={{ "display": "flex", "justifyContent": "center", "alignItems": "center"}}>
                       <label htmlFor="music" style={{ "margin": "0 8px"}}>Music</label>
@@ -310,10 +230,12 @@ export default function Home() {
                 </div>
               :
                 (loading ? 
+                  //Loading animation
                   <div>
                     <Lottie style={{ "height": "100px" }} animationData={loadingAnimation} loop={true} />
                   </div>
                 :
+                //Primary CTA
                 <div style={{ "height": "100px", "display": "flex", "alignItems": "center", "justifyContent": "center"  }}>
                   <Button 
                     onPress={onSubmit} 
